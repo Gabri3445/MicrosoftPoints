@@ -1,0 +1,27 @@
+﻿<Window x:Class="Microsoft_Points.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Microsoft_Points"
+        mc:Ignorable="d"
+        Style="{DynamicResource CustomWindowStyle}"
+        Title="Microsoft Points" Height="600" Width="300"
+        ResizeMode="NoResize">
+    <Grid ShowGridLines="True">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" ShowGridLines="True">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Select a method"></TextBlock>
+                <RadioButton GroupName="Method" IsChecked="True">Random Letters</RadioButton>
+                <RadioButton GroupName="Method">Sequence of a single character</RadioButton>
+            </StackPanel>
+        </Grid>
+        
+        <Grid Grid.Row="2"><Button>Start</Button></Grid>
+    </Grid>
+</Window>
