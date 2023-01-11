@@ -3,25 +3,38 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Microsoft_Points"
         mc:Ignorable="d"
         Style="{DynamicResource CustomWindowStyle}"
         Title="Microsoft Points" Height="600" Width="300"
+        Loaded="MainWindow_OnLoaded"
         ResizeMode="NoResize">
-    <Grid ShowGridLines="True">
+    <Grid ShowGridLines="True" Margin="20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
-            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" ShowGridLines="True">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Select a method"></TextBlock>
-                <RadioButton GroupName="Method" IsChecked="True">Random Letters</RadioButton>
-                <RadioButton GroupName="Method">Sequence of a single character</RadioButton>
+                <TextBlock Text="Select a method" />
+                <RadioButton GroupName="Method" Name="RandomChar" Content="Random Letters"
+                             Checked="ToggleButton_OnChecked" />
+                <RadioButton GroupName="Method" Content="Sequence of a single character"
+                             Checked="ToggleButton_OnChecked" Name="Char" />
+                <TextBox IsEnabled="False" Name="CharacterBox" PreviewKeyDown="CharacterBox_OnPreviewKeyDown" />
             </StackPanel>
         </Grid>
-        
-        <Grid Grid.Row="2"><Button>Start</Button></Grid>
+        <Grid Grid.Row="1">
+            <StackPanel Orientation="Vertical">
+                <TextBlock Text="Delay in ms (200ms default)" />
+                <TextBox Name="DelayTextBox" PreviewKeyDown="DelayTextBox_OnPreviewKeyDown" />
+            </StackPanel>
+        </Grid>
+        <Grid Grid.Row="2">
+            <Button HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="40"
+                    Click="ButtonBase_OnClick">
+                Start
+            </Button>
+        </Grid>
     </Grid>
 </Window>

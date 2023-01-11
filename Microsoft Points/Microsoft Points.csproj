@@ -9,7 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <Folder Include="Themes" />
+        <Folder Include="Themes"/>
     </ItemGroup>
 
 </Project>
