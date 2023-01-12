@@ -12,4 +12,8 @@
         <Folder Include="Themes"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <PackageReference Include="WindowsInput" Version="6.4.0"/>
+    </ItemGroup>
+
 </Project>

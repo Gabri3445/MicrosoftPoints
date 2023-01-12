@@ -8,7 +8,7 @@
         Title="Microsoft Points" Height="600" Width="300"
         Loaded="MainWindow_OnLoaded"
         ResizeMode="NoResize">
-    <Grid ShowGridLines="True" Margin="20">
+    <Grid Margin="20">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
             <RowDefinition Height="*" />
@@ -26,7 +26,7 @@
         </Grid>
         <Grid Grid.Row="1">
             <StackPanel Orientation="Vertical">
-                <TextBlock Text="Delay in ms (200ms default)" />
+                <TextBlock Text="Delay between searches in ms (500ms default)" />
                 <TextBox Name="DelayTextBox" PreviewKeyDown="DelayTextBox_OnPreviewKeyDown" />
             </StackPanel>
         </Grid>
@@ -35,6 +35,8 @@
                     Click="ButtonBase_OnClick">
                 Start
             </Button>
+            <TextBox Visibility="Hidden" Name="WaitingText" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Margin="0,80,0,0" />
         </Grid>
     </Grid>
 </Window>
