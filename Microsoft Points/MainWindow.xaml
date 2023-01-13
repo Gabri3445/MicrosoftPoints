@@ -28,6 +28,8 @@
             <StackPanel Orientation="Vertical">
                 <TextBlock Text="Delay between searches in ms (500ms default)" />
                 <TextBox Name="DelayTextBox" PreviewKeyDown="DelayTextBox_OnPreviewKeyDown" />
+                <TextBlock Text="Initial delay in seconds (5s default)" />
+                <TextBox Name="InitDelayTextBox" PreviewKeyDown="InitDelayTextBox_OnPreviewKeyDown" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="2">

@@ -12,27 +12,44 @@ namespace Microsoft_Points;
 /// <summary>
 ///     Interaction logic for MainWindow.xaml
 /// </summary>
-public partial class MainWindow : Window
+public partial class MainWindow
 {
     //private readonly DispatcherTimer _dispatcherTimer;
     private string _characters = "";
     private int _delay = 200;
+    private int _initDelay;
+
     private double _remainingTime;
+    //private DispatcherTimer _dispatcherTimer;
+    //private bool _isRunning = false;
 
     public MainWindow()
     {
         InitializeComponent();
+
         /*_dispatcherTimer = new DispatcherTimer();
-        _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(1000 / 60); // 60 frames per second
+        _dispatcherTimer.Interval = TimeSpan.FromMilliseconds(16); // 60 frames per second
         _dispatcherTimer.Tick += Timer_Tick;
-        _dispatcherTimer.Start();*/
+        _dispatcherTimer.Start();
+        */
     }
 
-    private void Timer_Tick(object sender, EventArgs e)
+    /*private void Timer_Tick(object? sender, EventArgs e)
     {
-        if (WaitingText.Visibility == Visibility.Visible)
-            WaitingText.Text = _remainingTime.ToString(CultureInfo.CurrentCulture);
+        using (var keyboard = WindowsInput.Capture.Global.KeyboardAsync())
+        {
+            keyboard.KeyEvent += Keyboard_KeyEvent;
+        }
     }
+
+    private void Keyboard_KeyEvent(object? sender, EventSourceEventArgs<KeyboardEvent> e)
+    {
+        if (e.Data?.KeyDown?.Key == WindowsInput.Events.KeyCode.Control)
+        {
+            _isRunning = false;
+        }
+    }*/
+
 
     private void DelayTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
@@ -42,7 +59,7 @@ public partial class MainWindow : Window
         {
             _delay = Convert.ToInt32(textBox.Text);
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             MessageBox.Show("Enter a number");
         }
@@ -57,7 +74,7 @@ public partial class MainWindow : Window
                 if (temp.Length != 1) throw new Exception();
                 for (var i = 0; i < 34; i++) _characters = string.Concat(_characters, temp);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 MessageBox.Show("Enter a single character");
             }
@@ -67,12 +84,24 @@ public partial class MainWindow : Window
             {
                 _delay = Convert.ToInt32(DelayTextBox.Text);
             }
-            catch (Exception exception)
+            catch (Exception)
             {
                 MessageBox.Show("Enter a number");
             }
         else
             _delay = 500;
+
+        if (InitDelayTextBox.Text != "")
+            try
+            {
+                _initDelay = Convert.ToInt32(InitDelayTextBox?.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Enter a number");
+            }
+        else
+            _initDelay = 5;
 
         WaitingText.Visibility = Visibility.Visible;
         var arguments = new Arguments(_delay, _characters);
@@ -87,7 +116,7 @@ public partial class MainWindow : Window
         var characters = arguments.Characters;
         var temp = true;
         var startSeconds = DateTime.Now.Second;
-        var endSeconds = startSeconds + 5;
+        var endSeconds = startSeconds + _initDelay;
         while (temp)
             if (!(endSeconds - startSeconds < 0))
             {
@@ -109,22 +138,15 @@ public partial class MainWindow : Window
         for (var i = 0; i < 34; i++)
         {
             if (characters == "")
-            {
-                Simulate.Events().Click((char)('a' + random.Next(0, 26))).Wait(100).Click(KeyCode.Enter).Wait(delay)
+
+                Simulate.Events().Click((char) ('a' + random.Next(0, 26))).Wait(100).Click(KeyCode.Enter).Wait(delay)
                     .Invoke();
-            }
+
+
             else
-            {
-                string Multiply(string character, int times)
-                {
-                    var result = "";
-                    for (var j = 0; j < times; j++) result += character;
 
-                    return result;
-                }
+                Simulate.Events().Click(characters).Wait(100).Click(KeyCode.Enter).Wait(delay).Invoke();
 
-                Simulate.Events().Click(Multiply(characters, 34)).Wait(100).Click(KeyCode.Enter).Wait(delay).Invoke();
-            }
 
             Thread.Sleep(delay);
             Simulate.Events().Click(ButtonCode.Left).WaitToPreventDoubleClicking().Invoke();
@@ -155,7 +177,7 @@ public partial class MainWindow : Window
             if (temp.Length != 1) throw new Exception();
             for (var i = 0; i < 34; i++) _characters = string.Concat(_characters, temp);
         }
-        catch (Exception exception)
+        catch (Exception)
         {
             MessageBox.Show("Enter a single character");
         }
@@ -164,6 +186,20 @@ public partial class MainWindow : Window
     private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
     {
         RandomChar.IsChecked = true;
+    }
+
+    private void InitDelayTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var initDelay = sender as TextBox;
+        if (e.Key != Key.Enter) return;
+        try
+        {
+            _initDelay = Convert.ToInt32(initDelay?.Text);
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Enter a number");
+        }
     }
 
     private class Arguments
