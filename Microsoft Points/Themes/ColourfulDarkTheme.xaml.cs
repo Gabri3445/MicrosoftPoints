@@ -9,7 +9,7 @@ public partial class ColourfulDarkTheme
         if (e.Source != null)
             try
             {
-                CloseWind(Window.GetWindow((FrameworkElement) e.Source));
+                CloseWind(Window.GetWindow((FrameworkElement)e.Source));
             }
             catch
             {
@@ -21,7 +21,7 @@ public partial class ColourfulDarkTheme
         if (e.Source != null)
             try
             {
-                MaximizeRestore(Window.GetWindow((FrameworkElement) e.Source));
+                MaximizeRestore(Window.GetWindow((FrameworkElement)e.Source));
             }
             catch
             {
@@ -33,7 +33,7 @@ public partial class ColourfulDarkTheme
         if (e.Source != null)
             try
             {
-                MinimizeWind(Window.GetWindow((FrameworkElement) e.Source));
+                MinimizeWind(Window.GetWindow((FrameworkElement)e.Source));
             }
             catch
             {

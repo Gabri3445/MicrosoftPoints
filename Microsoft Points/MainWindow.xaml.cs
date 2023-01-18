@@ -18,6 +18,7 @@ public partial class MainWindow
     private string _characters = "";
     private int _delay = 200;
     private int _initDelay;
+    private int _letterCount = 34;
 
     private double _remainingTime;
     //private DispatcherTimer _dispatcherTimer;
@@ -34,7 +35,8 @@ public partial class MainWindow
         */
     }
 
-    /*private void Timer_Tick(object? sender, EventArgs e)
+    /*
+     private void Timer_Tick(object? sender, EventArgs e)
     {
         using (var keyboard = WindowsInput.Capture.Global.KeyboardAsync())
         {
@@ -57,7 +59,7 @@ public partial class MainWindow
         if (e.Key != Key.Enter) return;
         try
         {
-            _delay = Convert.ToInt32(textBox.Text);
+            if (Convert.ToInt32(textBox.Text) > 0) _delay = Convert.ToInt32(textBox.Text);
         }
         catch (Exception)
         {
@@ -82,7 +84,7 @@ public partial class MainWindow
         if (DelayTextBox.Text != "")
             try
             {
-                _delay = Convert.ToInt32(DelayTextBox.Text);
+                if (Convert.ToInt32(DelayTextBox.Text) > 0) _delay = Convert.ToInt32(DelayTextBox.Text);
             }
             catch (Exception)
             {
@@ -94,7 +96,7 @@ public partial class MainWindow
         if (InitDelayTextBox.Text != "")
             try
             {
-                _initDelay = Convert.ToInt32(InitDelayTextBox?.Text);
+                if (Convert.ToInt32(InitDelayTextBox?.Text) > 0) _initDelay = Convert.ToInt32(InitDelayTextBox?.Text);
             }
             catch (Exception)
             {
@@ -103,8 +105,20 @@ public partial class MainWindow
         else
             _initDelay = 5;
 
+        if (Count.Text != "")
+            try
+            {
+                if (Convert.ToInt32(Count?.Text) > 0) _letterCount = Convert.ToInt32(Count?.Text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Enter a number");
+            }
+        else
+            _letterCount = 34;
+
         WaitingText.Visibility = Visibility.Visible;
-        var arguments = new Arguments(_delay, _characters);
+        var arguments = new Arguments(_delay, _characters, _letterCount);
         var thread = new Thread(PointsInput);
         thread.Start(arguments);
     }
@@ -114,6 +128,7 @@ public partial class MainWindow
         if (arg is not Arguments arguments) return;
         var delay = arguments.Delay;
         var characters = arguments.Characters;
+        var letterCount = arguments.LetterCount;
         var temp = true;
         var startSeconds = DateTime.Now.Second;
         var endSeconds = startSeconds + _initDelay;
@@ -135,13 +150,12 @@ public partial class MainWindow
             }
 
         var random = new Random();
-        for (var i = 0; i < 34; i++)
+        for (var i = 0; i < letterCount; i++)
         {
             if (characters == "")
 
-                Simulate.Events().Click((char) ('a' + random.Next(0, 26))).Wait(100).Click(KeyCode.Enter).Wait(delay)
+                Simulate.Events().Click((char)('a' + random.Next(0, 26))).Wait(100).Click(KeyCode.Enter).Wait(delay)
                     .Invoke();
-
 
             else
 
@@ -194,7 +208,21 @@ public partial class MainWindow
         if (e.Key != Key.Enter) return;
         try
         {
-            _initDelay = Convert.ToInt32(initDelay?.Text);
+            if (Convert.ToInt32(initDelay?.Text) > 0) _initDelay = Convert.ToInt32(initDelay?.Text);
+        }
+        catch (Exception)
+        {
+            MessageBox.Show("Enter a number");
+        }
+    }
+
+    private void Count_OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        var count = sender as TextBox;
+        if (e.Key != Key.Enter) return;
+        try
+        {
+            if (Convert.ToInt32(count?.Text) > 0) _letterCount = Convert.ToInt32(count?.Text);
         }
         catch (Exception)
         {
@@ -208,10 +236,13 @@ public partial class MainWindow
 
         public readonly int Delay;
 
-        public Arguments(int delay, string characters)
+        public readonly int LetterCount;
+
+        public Arguments(int delay, string characters, int letterCount)
         {
             Delay = delay;
             Characters = characters;
+            LetterCount = letterCount;
         }
     }
 }

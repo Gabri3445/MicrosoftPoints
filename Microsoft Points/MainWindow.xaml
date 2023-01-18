@@ -22,6 +22,8 @@
                 <RadioButton GroupName="Method" Content="Sequence of a single character"
                              Checked="ToggleButton_OnChecked" Name="Char" />
                 <TextBox IsEnabled="False" Name="CharacterBox" PreviewKeyDown="CharacterBox_OnPreviewKeyDown" />
+                <Label Target="{Binding ElementName=Count}">Number of letters (34 Default)</Label>
+                <TextBox Name="Count" PreviewKeyDown="Count_OnPreviewKeyDown" Text="34" />
             </StackPanel>
         </Grid>
         <Grid Grid.Row="1">
