@@ -133,7 +133,8 @@ public partial class MainWindow
         var startSeconds = DateTime.Now.Second;
         var endSeconds = startSeconds + _initDelay;
         while (temp)
-            if (!(endSeconds - startSeconds < 0))
+        {
+            if (endSeconds - startSeconds > 0)
             {
                 _remainingTime = endSeconds - startSeconds;
                 Dispatcher.BeginInvoke(() =>
@@ -148,6 +149,7 @@ public partial class MainWindow
             {
                 temp = false;
             }
+        }
 
         var random = new Random();
         for (var i = 0; i < letterCount; i++)
