@@ -36,8 +36,8 @@
         </Grid>
         <Grid Grid.Row="2">
             <Button HorizontalAlignment="Center" VerticalAlignment="Center" Width="60" Height="40"
-                    Click="ButtonBase_OnClick">
-                Start
+                    Click="ButtonBase_OnClick" Name="StartButton">
+                <TextBlock Name="StartButtonText">Start</TextBlock>
             </Button>
             <TextBox Visibility="Hidden" Name="WaitingText" HorizontalAlignment="Center" VerticalAlignment="Center"
                      Margin="0,80,0,0" />

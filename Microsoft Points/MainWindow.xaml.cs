@@ -15,14 +15,29 @@ namespace Microsoft_Points;
 public partial class MainWindow
 {
     //private readonly DispatcherTimer _dispatcherTimer;
+    /// <summary>
+    ///     Character to insert
+    /// </summary>
     private string _characters = "";
-    private int _delay = 200;
-    private int _initDelay;
-    private int _letterCount = 34;
 
-    private double _remainingTime;
+    /// <summary>
+    ///     Delay between each enter
+    /// </summary>
+    private int _delay = 200;
+
+    /// <summary>
+    ///     Initial delay
+    /// </summary>
+    private int _initDelay;
+
+    /// <summary>
+    ///     Letters to insert
+    /// </summary>
+    private int _letterCount = 34;
     //private DispatcherTimer _dispatcherTimer;
-    //private bool _isRunning = false;
+    private bool _isRunning = false;
+
+    private volatile bool _stopThread = false;
 
     public MainWindow()
     {
@@ -51,8 +66,6 @@ public partial class MainWindow
             _isRunning = false;
         }
     }*/
-
-
     private void DelayTextBox_OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
         var textBox = (sender as TextBox)!;
@@ -69,6 +82,11 @@ public partial class MainWindow
 
     private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
     {
+        if (_isRunning && StartButtonText.Text == "Start")
+        {
+            MessageBox.Show("Already running");
+        }
+        
         if (CharacterBox.IsEnabled)
             try
             {
@@ -119,28 +137,53 @@ public partial class MainWindow
 
         WaitingText.Visibility = Visibility.Visible;
         var arguments = new Arguments(_delay, _characters, _letterCount);
-        var thread = new Thread(PointsInput);
-        thread.Start(arguments);
+        if (StartButtonText.Text == "Start")
+        {
+            _stopThread = false;
+            var thread = new Thread(PointsInput);
+            StartButtonText.Text = "Stop";
+            _isRunning = true;
+            thread.Start(arguments);
+        }
+        else
+        {
+            _stopThread = true;
+            StartButtonText.Text = "Start";
+            // Add code to wait for the thread to stop, if desired
+        }
     }
 
+    /// <summary>
+    /// Function that handles inserting the characters
+    /// </summary>
+    /// <param name="arg">Arguments for the thread <see cref="Arguments"/></param>
     private void PointsInput(object? arg)
     {
         if (arg is not Arguments arguments) return;
         var delay = arguments.Delay;
+        var remainingTime = 0;
         var characters = arguments.Characters;
         var letterCount = arguments.LetterCount;
         var temp = true;
         var startSeconds = DateTime.Now.Second;
         var endSeconds = startSeconds + _initDelay;
         while (temp)
-        {
             if (endSeconds - startSeconds > 0)
             {
-                _remainingTime = endSeconds - startSeconds;
+                if (_stopThread)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        StartButtonText.Text = "Start";
+                    });
+                    break;
+                }
+                remainingTime = endSeconds - startSeconds;
+                var time = remainingTime;
                 Dispatcher.BeginInvoke(() =>
                 {
                     if (WaitingText.Visibility == Visibility.Visible)
-                        WaitingText.Text = _remainingTime.ToString(CultureInfo.CurrentCulture);
+                        WaitingText.Text = time.ToString(CultureInfo.CurrentCulture);
                 });
                 Thread.Sleep(1000);
                 endSeconds--;
@@ -149,11 +192,18 @@ public partial class MainWindow
             {
                 temp = false;
             }
-        }
 
         var random = new Random();
         for (var i = 0; i < letterCount; i++)
         {
+            if (_stopThread)
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    StartButtonText.Text = "Start";
+                });
+                break;
+            }
             if (characters == "")
 
                 Simulate.Events().Click((char)('a' + random.Next(0, 26))).Wait(100).Click(KeyCode.Enter).Wait(delay)
@@ -167,6 +217,11 @@ public partial class MainWindow
             Thread.Sleep(delay);
             Simulate.Events().Click(ButtonCode.Left).WaitToPreventDoubleClicking().Invoke();
         }
+        Dispatcher.Invoke(() =>
+        {
+            StartButtonText.Text = "Start";
+        });
+        _isRunning = false;
     }
 
     private void ToggleButton_OnChecked(object sender, RoutedEventArgs e)
@@ -232,12 +287,24 @@ public partial class MainWindow
         }
     }
 
+    /// <summary>
+    ///     Arguments for the thread
+    /// </summary>
     private class Arguments
     {
+        /// <summary>
+        ///     <see cref="_characters" />
+        /// </summary>
         public readonly string Characters;
 
+        /// <summary>
+        ///     <see cref="_delay" />
+        /// </summary>
         public readonly int Delay;
 
+        /// <summary>
+        ///     <see cref="_letterCount" />
+        /// </summary>
         public readonly int LetterCount;
 
         public Arguments(int delay, string characters, int letterCount)

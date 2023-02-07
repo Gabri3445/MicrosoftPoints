@@ -8,12 +8,16 @@
         <UseWPF>true</UseWPF>
     </PropertyGroup>
 
+    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+      <DocumentationFile>bin\Debug\Microsoft Points.xml</DocumentationFile>
+    </PropertyGroup>
+
     <ItemGroup>
-        <Folder Include="Themes"/>
+        <Folder Include="Themes" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="WindowsInput" Version="6.4.0"/>
+        <PackageReference Include="WindowsInput" Version="6.4.0" />
     </ItemGroup>
 
 </Project>
